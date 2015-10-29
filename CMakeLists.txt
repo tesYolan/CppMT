@@ -8,12 +8,18 @@ option(BUILD_TRAX_CLIENT "Build the trax client." OFF)
 
 find_package(OpenCV REQUIRED)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
+
 add_definitions ("-Wall")
+
 
 add_library(cmtlib common.cpp CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp
     Tracker.cpp fastcluster/fastcluster.cpp)
 target_link_libraries(cmtlib ${OpenCV_LIBS})
 set_target_properties(cmtlib PROPERTIES OUTPUT_NAME "cmt")
+
 
 add_executable(cmt gui.cpp main.cpp)
 target_link_libraries(cmt cmtlib)
