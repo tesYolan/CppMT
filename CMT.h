@@ -22,7 +22,7 @@ namespace cmt
 class CMT
 {
 public:
-    CMT() : str_detector("FAST"), str_descriptor("BRISK") {};
+    CMT() : str_detector("FAST"), str_descriptor("BRISK"), initialized(false), name("unset") {};
     void initialize(const Mat im_gray, const Rect rect);
     void processFrame(const Mat im_gray);
 
@@ -36,7 +36,11 @@ public:
 
     vector<Point2f> points_active; //public for visualization purposes
     RotatedRect bb_rot;
-
+	bool initialized; 
+	//To get the same kind of ratio going in the system. 
+	int num_initial_keypoints; 
+	int num_active_keypoints; 
+	string name; 
 private:
     Ptr<FeatureDetector> detector;
     Ptr<DescriptorExtractor> descriptor;

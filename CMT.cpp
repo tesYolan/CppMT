@@ -7,6 +7,7 @@ namespace cmt {
 
 void CMT::initialize(const Mat im_gray, const Rect rect)
 {
+	initialized= false; 
     FILE_LOG(logDEBUG) << "CMT::initialize() call";
 
     //Remember initial size
@@ -104,8 +105,11 @@ void CMT::initialize(const Mat im_gray, const Rect rect)
         points_active.push_back(keypoints_fg[i].pt);
         classes_active = classes_fg;
     }
-
+	
+	//Now set the number of active points; 
+	num_initial_keypoints = points_active.size(); 
     FILE_LOG(logDEBUG) << "CMT::initialize() return";
+    initialized = true; 
 }
 
 void CMT::processFrame(Mat im_gray) {
@@ -178,6 +182,8 @@ void CMT::processFrame(Mat im_gray) {
 
     FILE_LOG(logDEBUG) << points_matched_local.size() << " points matched locally.";
 
+    //Assing the active points in the space. 
+    num_active_keypoints = points_active.size(); 
     //Clear active points
     points_active.clear();
     classes_active.clear();
