@@ -23,7 +23,7 @@ class CMT
 {
 public:
     CMT() : str_detector("FAST"), str_descriptor("BRISK"), initialized(false), name("unset") {};
-    void initialize(const Mat im_gray, const Rect rect);
+    void initialize(const Mat im_gray, const Rect rect, string tracker_name);
     void processFrame(const Mat im_gray);
 
     Fusion fusion;

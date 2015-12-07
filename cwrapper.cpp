@@ -14,13 +14,13 @@ void delCMT(c_CMT cmt) {
 }
 
 void cmt_initialize(c_CMT cmt, unsigned char* im_data, size_t rows, size_t cols,
-    int x, int y, int w, int h) {
+    int x, int y, int w, int h, string tracker_name) {
 
     Rect rect(x,y,w,h);
 
     Mat im_gray(rows, cols, CV_8UC1, im_data);
-
-    ((CMT *)cmt)->initialize(im_gray, rect);
+	
+    ((CMT *)cmt)->initialize(im_gray, rect, tracker_name);
 }
 
 void processFrame(c_CMT cmt, unsigned char* im_data, size_t rows, size_t cols,

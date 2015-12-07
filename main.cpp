@@ -282,9 +282,9 @@ int main(int argc, char **argv)
         Mat im0 = imread(files[0]);
         Mat im0_gray;
         cvtColor(im0, im0_gray, CV_BGR2GRAY);
-
+		string name; 
         //Initialize cmt
-        cmt.initialize(im0_gray, rect);
+        cmt.initialize(im0_gray, rect, name );
 
         //Write init region to output file
         ofstream output_file("output.txt");
@@ -391,7 +391,8 @@ int main(int argc, char **argv)
     }
 
     //Initialize CMT
-    cmt.initialize(im0_gray, rect);
+    string name; 
+    cmt.initialize(im0_gray, rect, name);
 
     int frame = skip_frames;
 

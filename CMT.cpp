@@ -5,9 +5,11 @@
 
 namespace cmt {
 
-void CMT::initialize(const Mat im_gray, const Rect rect)
+void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name)
 {
 	initialized= false; 
+	name= tracker_name; 
+	
     FILE_LOG(logDEBUG) << "CMT::initialize() call";
 
     //Remember initial size
