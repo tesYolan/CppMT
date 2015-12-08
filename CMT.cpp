@@ -45,7 +45,7 @@ void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name)
     {
         KeyPoint k = keypoints[i];
         Point2f pt = k.pt;
-
+//This is adding whatever is in the rect to be tracked by the system. So the most interesting points are this. 
         if (pt.x > rect.x && pt.y > rect.y && pt.x < rect.br().x && pt.y < rect.br().y)
         {
             keypoints_fg.push_back(k);
