@@ -185,12 +185,13 @@ void CMT::processFrame(Mat im_gray) {
     FILE_LOG(logDEBUG) << points_matched_local.size() << " points matched locally.";
 
     //Assing the active points in the space. 
-    num_active_keypoints = points_active.size(); 
+    
     //Clear active points
     points_active.clear();
     classes_active.clear();
 
     //Fuse locally matched points and inliers
+    num_active_keypoints = points_active.size(); 
     fusion.preferFirst(points_matched_local, classes_matched_local, points_inlier, classes_inlier, points_active, classes_active);
 //    points_active = points_fused;
 //    classes_active = classes_fused;
