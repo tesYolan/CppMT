@@ -191,11 +191,11 @@ void CMT::processFrame(Mat im_gray) {
     classes_active.clear();
 
     //Fuse locally matched points and inliers
-    num_active_keypoints = points_active.size(); 
+    
     fusion.preferFirst(points_matched_local, classes_matched_local, points_inlier, classes_inlier, points_active, classes_active);
 //    points_active = points_fused;
 //    classes_active = classes_fused;
-
+	num_active_keypoints = points_active.size(); 
     FILE_LOG(logDEBUG) << points_active.size() << " final fused points.";
 
     //TODO: Use theta to suppress result
