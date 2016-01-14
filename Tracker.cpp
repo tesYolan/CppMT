@@ -4,12 +4,12 @@
 
 namespace cmt {
 
-void Tracker::track(const Mat im_prev, const Mat im_gray, const vector<Point2f> & points_prev,
-        vector<Point2f> & points_tracked, vector<unsigned char> & status)
+bool Tracker::track(const Mat im_prev, const Mat im_gray, const vector<Point2f> & points_prev,
+        vector<Point2f> & points_tracked, vector<unsigned char> & status, int threshold)
 {
-    FILE_LOG(logDEBUG) << "Tracker::track() call";
+    FILE_LOG(logDEBUG) << "Tracker::track() call: Previous ID" << points_prev.size();
 
-    if (points_prev.size() > 0)
+    if (points_prev.size() > threshold)
     {
         vector<float> err; //Needs to be float
 
@@ -39,10 +39,15 @@ void Tracker::track(const Mat im_prev, const Mat im_gray, const vector<Point2f> 
             }
 
         }
-
+	FILE_LOG(logDEBUG) << "Tracker::track() Sucessful return";
+	return true; 
     }
+    else {
+	FILE_LOG(logDEBUG) << "Tracker::track() Failure return";
+	return false; 
+	}
 
-    FILE_LOG(logDEBUG) << "Tracker::track() return";
+    
 }
 
 } /* namespace cmt */

@@ -5,11 +5,11 @@
 
 namespace cmt {
 
-void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name)
+void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name, int threshold_value)
 {
 	initialized= false; 
 	name= tracker_name; 
-	
+	threshold = threshold_value; 
     FILE_LOG(logDEBUG) << "CMT::initialize() call";
 
     //Remember initial size
@@ -110,6 +110,18 @@ void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name)
 	
 	//Now set the number of active points; 
 	num_initial_keypoints = points_active.size(); 
+
+    //Now lets store the values of the images. 
+    //Now we are using it to detect faces in the system; 
+    //So let's store the inital face results and the inital face. 
+
+    //That way the face recognition can be done in another function. 
+
+    initialRect = rect; 
+    imArchive = im_gray;
+    pointsArchive.assign(points_fg.begin(), points_fg.end());
+    classesArchive.assign(classes_fg.begin(), classes_fg.end());
+
     FILE_LOG(logDEBUG) << "CMT::initialize() return";
     initialized = true; 
 }
@@ -121,7 +133,13 @@ void CMT::processFrame(Mat im_gray) {
     //Track keypoints
     vector<Point2f> points_tracked;
     vector<unsigned char> status;
-    tracker.track(im_prev, im_gray, points_active, points_tracked, status);
+    opticalflow_results= tracker.track(im_prev, im_gray, points_active, points_tracked, status, threshold);
+    
+    if (opticalflow_results)
+    {
+		tracker_lost = true; 
+		return; 
+	}
 
     FILE_LOG(logDEBUG) << points_tracked.size() << " tracked points.";
 
@@ -203,6 +221,7 @@ void CMT::processFrame(Mat im_gray) {
 
     //Remember current image
     im_prev = im_gray;
+
 
     FILE_LOG(logDEBUG) << "CMT::processFrame() return";
 }

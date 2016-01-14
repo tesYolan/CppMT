@@ -22,8 +22,8 @@ namespace cmt
 class CMT
 {
 public:
-    CMT() : str_detector("FAST"), str_descriptor("BRISK"), initialized(false), name("unset") {};
-    void initialize(const Mat im_gray, const Rect rect, string tracker_name);
+    CMT() : str_detector("FAST"), str_descriptor("BRISK"), initialized(false), name("unset") , threshold(50){};
+    void initialize(const Mat im_gray, const Rect rect, string tracker_name, int threshold=0);
     void processFrame(const Mat im_gray);
 
     Fusion fusion;
@@ -40,7 +40,18 @@ public:
 	//To get the same kind of ratio going in the system. 
 	int num_initial_keypoints; 
 	int num_active_keypoints; 
+    int threshold; 
+
+	//Removing the optical flow if elements are stopped. 
+	bool opticalflow_results; 
+	bool tracker_lost; 
 	string name; 
+
+    Mat imArchive;
+    vector<Point2f>pointsArchive;
+    vector<int>classesArchive;
+    Rect initialRect; 
+
 private:
     Ptr<FeatureDetector> detector;
     Ptr<DescriptorExtractor> descriptor;
