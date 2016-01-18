@@ -118,7 +118,7 @@ void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name, in
     //That way the face recognition can be done in another function. 
 
     initialRect = rect; 
-    imArchive = im_gray;
+    imArchive = im_gray(rect);
     pointsArchive.assign(points_fg.begin(), points_fg.end());
     classesArchive.assign(classes_fg.begin(), classes_fg.end());
 
