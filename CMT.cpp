@@ -135,7 +135,7 @@ void CMT::processFrame(Mat im_gray) {
     vector<unsigned char> status;
     opticalflow_results= tracker.track(im_prev, im_gray, points_active, points_tracked, status, threshold);
     
-    if (opticalflow_results)
+    if (!opticalflow_results)
     {
 		tracker_lost = true; 
 		return; 
