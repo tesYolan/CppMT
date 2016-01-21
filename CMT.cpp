@@ -126,7 +126,7 @@ void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name, in
     initialized = true; 
 }
 
-void CMT::processFrame(Mat im_gray) {
+void CMT::processFrame(Mat im_gray,int threshold) {
 
     FILE_LOG(logDEBUG) << "CMT::processFrame() call";
 
