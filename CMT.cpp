@@ -10,7 +10,7 @@ void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name, in
 	initialized= false; 
 	name= tracker_name; 
 	threshold = threshold_value; 
-    FILE_LOG(logDEBUG) << "CMT::initialize() call";
+    //FILE_LOG(logDEBUG) << "CMT::initialize() call";
 
     //Remember initial size
     size_initial = rect.size();
@@ -81,7 +81,7 @@ void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name, in
         points_fg.push_back(keypoints_fg[i].pt);
     }
 
-    FILE_LOG(logDEBUG) << points_fg.size() << " foreground points.";
+    //FILE_LOG(logDEBUG) << points_fg.size() << " foreground points.";
 
     for (size_t i = 0; i < keypoints_bg.size(); i++)
     {
@@ -122,13 +122,13 @@ void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name, in
     pointsArchive.assign(points_fg.begin(), points_fg.end());
     classesArchive.assign(classes_fg.begin(), classes_fg.end());
 
-    FILE_LOG(logDEBUG) << "CMT::initialize() return";
+    ////FILE_LOG(logDEBUG) << "CMT::initialize() return";
     initialized = true; 
 }
 
 void CMT::processFrame(Mat im_gray,int threshold) {
 
-    FILE_LOG(logDEBUG) << "CMT::processFrame() call";
+    ////FILE_LOG(logDEBUG) << "CMT::processFrame() call";
 
     //Track keypoints
     vector<Point2f> points_tracked;
@@ -141,7 +141,7 @@ void CMT::processFrame(Mat im_gray,int threshold) {
 		return; 
 	}
 
-    FILE_LOG(logDEBUG) << points_tracked.size() << " tracked points.";
+    //FILE_LOG(logDEBUG) << points_tracked.size() << " tracked points.";
 
     //keep only successful classes
     vector<int> classes_tracked;
@@ -158,7 +158,7 @@ void CMT::processFrame(Mat im_gray,int threshold) {
     vector<KeyPoint> keypoints;
     detector->detect(im_gray, keypoints);
 
-    FILE_LOG(logDEBUG) << keypoints.size() << " keypoints found.";
+    //FILE_LOG(logDEBUG) << keypoints.size() << " keypoints found.";
 
     Mat descriptors;
     descriptor->compute(im_gray, keypoints, descriptors);
@@ -168,7 +168,7 @@ void CMT::processFrame(Mat im_gray,int threshold) {
     vector<int> classes_matched_global;
     matcher.matchGlobal(keypoints, descriptors, points_matched_global, classes_matched_global);
 
-    FILE_LOG(logDEBUG) << points_matched_global.size() << " points matched globally.";
+    //FILE_LOG(logDEBUG) << points_matched_global.size() << " points matched globally.";
 
     //Fuse tracked and globally matched points
     vector<Point2f> points_fused;
@@ -176,14 +176,14 @@ void CMT::processFrame(Mat im_gray,int threshold) {
     fusion.preferFirst(points_tracked, classes_tracked, points_matched_global, classes_matched_global,
             points_fused, classes_fused);
 
-    FILE_LOG(logDEBUG) << points_fused.size() << " points fused.";
+    //FILE_LOG(logDEBUG) << points_fused.size() << " points fused.";
 
     //Estimate scale and rotation from the fused points
     float scale;
     float rotation;
     consensus.estimateScaleRotation(points_fused, classes_fused, scale, rotation);
 
-    FILE_LOG(logDEBUG) << "scale " << scale << ", " << "rotation " << rotation;
+    //FILE_LOG(logDEBUG) << "scale " << scale << ", " << "rotation " << rotation;
 
     //Find inliers and the center of their votes
     Point2f center;
@@ -192,15 +192,15 @@ void CMT::processFrame(Mat im_gray,int threshold) {
     consensus.findConsensus(points_fused, classes_fused, scale, rotation,
             center, points_inlier, classes_inlier);
 
-    FILE_LOG(logDEBUG) << points_inlier.size() << " inlier points.";
-    FILE_LOG(logDEBUG) << "center " << center;
+    //FILE_LOG(logDEBUG) << points_inlier.size() << " inlier points.";
+    //FILE_LOG(logDEBUG) << "center " << center;
 
     //Match keypoints locally
     vector<Point2f> points_matched_local;
     vector<int> classes_matched_local;
     matcher.matchLocal(keypoints, descriptors, center, scale, rotation, points_matched_local, classes_matched_local);
 
-    FILE_LOG(logDEBUG) << points_matched_local.size() << " points matched locally.";
+    //FILE_LOG(logDEBUG) << points_matched_local.size() << " points matched locally.";
 
     //Assing the active points in the space. 
     
@@ -214,7 +214,7 @@ void CMT::processFrame(Mat im_gray,int threshold) {
 //    points_active = points_fused;
 //    classes_active = classes_fused;
 	num_active_keypoints = points_active.size(); 
-    FILE_LOG(logDEBUG) << points_active.size() << " final fused points.";
+    //FILE_LOG(logDEBUG) << points_active.size() << " final fused points.";
 
     //TODO: Use theta to suppress result
     bb_rot = RotatedRect(center,  size_initial * scale, rotation/CV_PI * 180);
@@ -223,7 +223,7 @@ void CMT::processFrame(Mat im_gray,int threshold) {
     im_prev = im_gray;
 
 
-    FILE_LOG(logDEBUG) << "CMT::processFrame() return";
+    //FILE_LOG(logDEBUG) << "CMT::processFrame() return";
 }
 
 } /* namespace CMT */

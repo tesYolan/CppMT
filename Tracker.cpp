@@ -7,7 +7,7 @@ namespace cmt {
 bool Tracker::track(const Mat im_prev, const Mat im_gray, const vector<Point2f> & points_prev,
         vector<Point2f> & points_tracked, vector<unsigned char> & status, int threshold)
 {
-    FILE_LOG(logDEBUG) << "Tracker::track() call: Previous ID" << points_prev.size();
+    //FILE_LOG(logDEBUG) << "Tracker::track() call: Previous ID" << points_prev.size();
 
     if (points_prev.size() > threshold)
     {
@@ -39,11 +39,11 @@ bool Tracker::track(const Mat im_prev, const Mat im_gray, const vector<Point2f> 
             }
 
         }
-	FILE_LOG(logDEBUG) << "Tracker::track() Sucessful return";
+	//FILE_LOG(logDEBUG) << "Tracker::track() Sucessful return";
 	return true; 
     }
     else {
-	FILE_LOG(logDEBUG) << "Tracker::track() Failure return";
+	//FILE_LOG(logDEBUG) << "Tracker::track() Failure return";
 	return false; 
 	}
 

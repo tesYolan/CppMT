@@ -6,7 +6,7 @@ void Fusion::preferFirst(const vector<Point2f> & points_first, const vector<int>
     const vector<Point2f> & points_second, const vector<int> & classes_second,
     vector<Point2f> & points_fused, vector<int> & classes_fused)
 {
-    FILE_LOG(logDEBUG) << "Fusion::preferFirst() call";
+    //FILE_LOG(logDEBUG) << "Fusion::preferFirst() call";
 
     points_fused = points_first;
     classes_fused = classes_first;
@@ -30,7 +30,7 @@ void Fusion::preferFirst(const vector<Point2f> & points_first, const vector<int>
 
     }
 
-    FILE_LOG(logDEBUG) << "Fusion::preferFirst() return";
+    //FILE_LOG(logDEBUG) << "Fusion::preferFirst() return";
 }
 
 } /* namespace cmt */
