@@ -143,6 +143,11 @@ void CMT::processFrame(Mat im_gray, int threshold) {
             tracker_lost = true;
             return;
         }
+        else
+        {
+            //To evaluate the cmt results
+            tracker_lost = false; 
+        }
     }
 
     //FILE_LOG(logDEBUG) << points_tracked.size() << " tracked points.";
