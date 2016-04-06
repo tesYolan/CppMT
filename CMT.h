@@ -25,7 +25,7 @@ public:
     CMT() : str_detector("FAST"), str_descriptor("BRISK"), initialized(false), name("unset") , threshold(50), tracker_lost(false){};
     void initialize(const Mat im_gray, const Rect rect, string tracker_name, int threshold=50);
     void processFrame(const Mat im_gray,int threshold=50);
-
+    void set_name(string tracker_name);
     Fusion fusion;
     Matcher matcher;
     Tracker tracker;

@@ -126,6 +126,11 @@ void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name, in
     initialized = true;
 }
 
+void CMT::set_name(string tracker_name)
+{
+    name = tracker_name;
+}
+
 void CMT::processFrame(Mat im_gray, int threshold) {
 
     ////FILE_LOG(logDEBUG) << "CMT::processFrame() call";
