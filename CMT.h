@@ -22,7 +22,7 @@ namespace cmt
 class CMT
 {
 public:
-    CMT() : str_detector("FAST"), str_descriptor("BRISK"), initialized(false), name("unset") , threshold(50), tracker_lost(false){};
+    CMT() : str_detector("FAST"), str_descriptor("BRISK"), initialized(false), name("unset") , threshold(50),identified(false), tracker_lost(false){};
     void initialize(const Mat im_gray, const Rect rect, string tracker_name, int threshold=50);
     void processFrame(const Mat im_gray,int threshold=50);
     void set_name(string tracker_name);
@@ -44,7 +44,8 @@ public:
 
 	//Removing the optical flow if elements are stopped. 
 	bool opticalflow_results; 
-	bool tracker_lost; 
+	bool tracker_lost;
+	bool identified;
 	string name; 
 
     Mat imArchive;
