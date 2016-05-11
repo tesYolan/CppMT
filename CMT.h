@@ -26,6 +26,9 @@ public:
     void initialize(const Mat im_gray, const Rect rect, string tracker_name, int threshold=50);
     void processFrame(const Mat im_gray,int threshold=50);
     void set_name(string tracker_name);
+
+    //Calls the intialize with the existing values. But maintains the previous values.
+    void updateArea(const Mat im_gray, const Rect rect);
     Fusion fusion;
     Matcher matcher;
     Tracker tracker;
