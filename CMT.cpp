@@ -126,9 +126,9 @@ void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name, in
     initialized = true;
 }
 
-void updateArea(const Mat im_gray, const Rect rect)
+void CMT::updateArea(const Mat im_gray, const Rect rect)
 {
-    initialize(im_gray, rect, name, threshold_value);
+    initialize(im_gray, rect, name, threshold);
 }
 
 void CMT::set_name(string tracker_name)
