@@ -29,6 +29,8 @@ public:
 
     //Calls the intialize with the existing values. But maintains the previous values.
     void updateArea(const Mat im_gray, const Rect rect);
+
+
     Fusion fusion;
     Matcher matcher;
     Tracker tracker;
@@ -39,17 +41,19 @@ public:
 
     vector<Point2f> points_active; //public for visualization purposes
     RotatedRect bb_rot;
-	bool initialized; 
+	bool initialized;
+	string name;
 	//To get the same kind of ratio going in the system. 
 	int num_initial_keypoints; 
 	int num_active_keypoints; 
     int threshold; 
 
 	//Removing the optical flow if elements are stopped. 
-	bool opticalflow_results; 
-	bool tracker_lost;
+	bool opticalflow_results;
 	bool identified;
-	string name; 
+	bool tracker_lost;
+
+
 
     Mat imArchive;
     vector<Point2f>pointsArchive;

@@ -24,7 +24,7 @@ endif()
 add_definitions ("-Wall")
 
 
-add_library(cmtlib common.cpp CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp
+add_library(cmtlib common.cpp CMT.cpp CMT_MAP.cpp Consensus.cpp Fusion.cpp Matcher.cpp
     Tracker.cpp fastcluster/fastcluster.cpp)
 target_link_libraries(cmtlib ${OpenCV_LIBS})
 set_target_properties(cmtlib PROPERTIES OUTPUT_NAME "cmt")
