@@ -22,6 +22,8 @@ queue_tracker.clear();
 
 
 //TODO a function that separates the map entires to multiple parts
+separate();
+
 boost::thread thread_1 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_1);
 boost::thread thread_2 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_2);
 boost::thread thread_3 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_3);
@@ -35,11 +37,9 @@ thread_1.join();
 //Possible is
 for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); v++)
 {
-
   //TODO this is where to do the threading application.
-  v->second.processFrame(im_gray, factor);
+//  v->second.processFrame(im_gray, factor);
   cmt_message message;
-
   message.initial_active_points = v->second.num_initial_keypoints;
   message.active_points = v->second.num_active_keypoints;
   message.tracker_name = v->second.name;
@@ -51,6 +51,7 @@ for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); 
   if(message.tracker_lost)
   {
   //ADD TO delete equeue.
+  //TODO There needs to a logic to handle this as quickly removed trackers are not particulaly good.
   queue_tracker.push_back(message.tracker_name);
   }
   message.recognized = v->second.identified;
@@ -117,8 +118,13 @@ cmt_.clear();
 void CMTMAP::separate()
 {
 int next = 0;
+string_1.clear();
+string_2.clear();
+string_3.clear();
+string_4.clear();
 for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); v++)
 {
+
     if(next == 0)
     {
         string_1.push_back(v->first);
