@@ -7,7 +7,7 @@ option(BUILD_WRAPPER "Build C and Python wrapper." ON)
 option(BUILD_TRAX_CLIENT "Build the trax client." OFF)
 
 find_package(OpenCV REQUIRED)
-
+find_package(Boost REQUIRED COMPONENTS system thread filesystem)
 # uninstall target
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
@@ -26,7 +26,7 @@ add_definitions ("-Wall")
 
 add_library(cmtlib common.cpp CMT.cpp CMT_MAP.cpp Consensus.cpp Fusion.cpp Matcher.cpp
     Tracker.cpp fastcluster/fastcluster.cpp)
-target_link_libraries(cmtlib ${OpenCV_LIBS})
+target_link_libraries(cmtlib ${OpenCV_LIBS} ${Boost_LIBRARIES})
 set_target_properties(cmtlib PROPERTIES OUTPUT_NAME "cmt")
 
 

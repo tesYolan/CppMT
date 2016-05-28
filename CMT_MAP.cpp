@@ -1,13 +1,42 @@
 #include "CMT_MAP.h"
 
 namespace cmt {
+void CMTMAP::process(const Mat im_gray, const int factor,std::vector<string> string_)
+{
+    //TODO make this one a thread
+ for(std::vector<std::string>::iterator v=string_.begin(); v!= string_.end();v++)
+ {
+    cmt_[*v].processFrame(im_gray, factor);
+ }
+//for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); v++)
+//{
+//  //TODO this is where to do the threading application.
+//  v->second.processFrame(im_gray, factor);
+//}
+
+}
 std::vector<cmt_message> CMTMAP::process_map(const Mat im_gray, const int factor)
 {
 std::vector<cmt_message> cmt_messages;
 queue_tracker.clear();
+
+
+//TODO a function that separates the map entires to multiple parts
+boost::thread thread_1 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_1);
+boost::thread thread_2 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_2);
+boost::thread thread_3 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_3);
+boost::thread thread_4 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_4);
+
+thread_4.join();
+thread_3.join();
+thread_2.join();
+thread_1.join();
+//If there are x_number of images;
+//Possible is
 for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); v++)
 {
 
+  //TODO this is where to do the threading application.
   v->second.processFrame(im_gray, factor);
   cmt_message message;
 
@@ -85,6 +114,32 @@ void CMTMAP::clear()
 cmt_.clear();
 }
 
-
+void CMTMAP::separate()
+{
+int next = 0;
+for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); v++)
+{
+    if(next == 0)
+    {
+        string_1.push_back(v->first);
+        next++;
+    }
+    else if(next == 1)
+    {
+        string_2.push_back(v->first);
+        next++;
+    }
+    else if(next == 2)
+    {
+        string_3.push_back(v->first);
+        next++;
+    }
+    else
+    {
+        string_4.push_back(v->first);
+        next = 0;
+    }
+}
+}
 
 }

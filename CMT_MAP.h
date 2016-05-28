@@ -11,6 +11,7 @@
 #include "getopt/getopt.h"
 #endif
 
+#include <boost/thread.hpp>
 #include <time.h>
 #include <sstream>
 #define SSTR( x ) dynamic_cast< std::ostringstream & >(( std::ostringstream() << std::dec << x ) ).str()
@@ -40,6 +41,11 @@ std::map<string, Mat> getImages();
 
 std::vector<string> removeLost();
 
+std::vector<string> string_1;
+std::vector<string> string_2;
+std::vector<string> string_3;
+std::vector<string> string_4;
+
 void getMapInfo();
 
 bool updatemapname(string tempname, int index);
@@ -47,6 +53,10 @@ bool updatemapname(string tempname, int index);
 void updateThreshold();
 
 void clear();
+
+void process(const Mat im_gray, const int factor,std::vector<string> string_);
+
+void separate();
 };
 }
 
