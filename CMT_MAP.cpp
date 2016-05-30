@@ -8,20 +8,12 @@ void CMTMAP::process(const Mat im_gray, const int factor,std::vector<string> str
  {
     cmt_[*v].processFrame(im_gray, factor);
  }
-//for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); v++)
-//{
-//  //TODO this is where to do the threading application.
-//  v->second.processFrame(im_gray, factor);
-//}
-
 }
 std::vector<cmt_message> CMTMAP::process_map(const Mat im_gray, const int factor)
 {
 std::vector<cmt_message> cmt_messages;
 queue_tracker.clear();
 
-
-//TODO a function that separates the map entires to multiple parts
 separate();
 
 boost::thread thread_1 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_1);
@@ -33,12 +25,9 @@ thread_4.join();
 thread_3.join();
 thread_2.join();
 thread_1.join();
-//If there are x_number of images;
-//Possible is
+
 for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); v++)
 {
-  //TODO this is where to do the threading application.
-//  v->second.processFrame(im_gray, factor);
   cmt_message message;
   message.initial_active_points = v->second.num_initial_keypoints;
   message.active_points = v->second.num_active_keypoints;
@@ -47,10 +36,10 @@ for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); 
 
   message.rect = rect & cv::Rect(0, 0, im_gray.size().width, im_gray.size().height);
   message.tracker_lost = v->second.tracker_lost;
+  message.validated = v->second.validated;
 
   if(message.tracker_lost)
   {
-  //ADD TO delete equeue.
   //TODO There needs to a logic to handle this as quickly removed trackers are not particulaly good.
   queue_tracker.push_back(message.tracker_name);
   }
@@ -65,6 +54,8 @@ return cmt_messages;
 
 std::vector<string> CMTMAP::removeLost()
 {
+  //TODO this needs to be a state machines and conditions to not start deleting trackers that where started to track below threshold. So Flexiable threshold.
+
   for(std::vector<string>::iterator v = queue_tracker.begin(); v!= queue_tracker.end(); v++)
   {
     cmt_.erase(*v);
@@ -77,7 +68,8 @@ std::map<string, Mat> CMTMAP::getImages()
 std::map<string, Mat> returnImages;
  for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); v++)
  {
-    returnImages[v->first] = v->second.imArchive;
+    if(v->second.validated)
+        returnImages[v->first] = v->second.imArchive;
  }
  return returnImages;
 }
@@ -93,6 +85,7 @@ string CMTMAP::addtomap(const Mat im_gray,const Rect rect)
   cmt_[tracker_name] = cmt::CMT();
   cmt_[tracker_name].consensus.estimate_rotation = true;
   cmt_[tracker_name].initialize(im_gray, rect, tracker_name);
+  cmt_[tracker_name].validated = false;
   return tracker_name;
 }
 
@@ -115,6 +108,11 @@ void CMTMAP::clear()
 cmt_.clear();
 }
 
+bool CMTMAP::validate(string name)
+{
+    cmt_[name].validated = true;
+    return true;
+}
 void CMTMAP::separate()
 {
 int next = 0;

@@ -23,6 +23,7 @@ struct cmt_message{
     string tracker_name;
     bool tracker_lost;
     bool recognized;
+    bool validated;
     Rect rect;
 };
 class CMTMAP
@@ -57,6 +58,8 @@ void clear();
 void process(const Mat im_gray, const int factor,std::vector<string> string_);
 
 void separate();
+
+bool validate(string name);
 };
 }
 

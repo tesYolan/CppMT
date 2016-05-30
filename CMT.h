@@ -22,7 +22,7 @@ namespace cmt
 class CMT
 {
 public:
-    CMT() : str_detector("FAST"), str_descriptor("BRISK"), initialized(false), name("unset") , threshold(50),identified(false), tracker_lost(false){};
+    CMT() : str_detector("FAST"), str_descriptor("BRISK"), initialized(false), name("unset") , threshold(50),identified(false), tracker_lost(false),validated(false){};
     void initialize(const Mat im_gray, const Rect rect, string tracker_name, int threshold=50);
     void processFrame(const Mat im_gray,int threshold=50);
     void set_name(string tracker_name);
@@ -60,6 +60,8 @@ public:
     vector<int>classesArchive;
     Rect initialRect; 
 
+    int counter;
+    bool validated;
 private:
     Ptr<FeatureDetector> detector;
     Ptr<DescriptorExtractor> descriptor;
