@@ -7,7 +7,7 @@
 #include "Fusion.h"
 #include "Matcher.h"
 #include "Tracker.h"
-
+#include <iostream>
 #include <opencv2/features2d/features2d.hpp>
 
 using cv::FeatureDetector;
@@ -22,9 +22,10 @@ namespace cmt
 class CMT
 {
 public:
-    CMT() : str_detector("FAST"), str_descriptor("BRISK"), initialized(false), name("unset") , threshold(50),identified(false), tracker_lost(false),validated(false){};
+    CMT() : str_detector("FAST"), str_descriptor("BRISK"), initialized(false), name("unset") ,
+             identified(false), tracker_lost(false),validated(false),counter(5),decreasing_validate(500){};
     void initialize(const Mat im_gray, const Rect rect, string tracker_name, int threshold=50);
-    void processFrame(const Mat im_gray,int threshold=50);
+    void processFrame(const Mat im_gray,int threshold=30);
     void set_name(string tracker_name);
 
     //Calls the intialize with the existing values. But maintains the previous values.
@@ -54,14 +55,22 @@ public:
 	bool tracker_lost;
 
 
-
     Mat imArchive;
     vector<Point2f>pointsArchive;
     vector<int>classesArchive;
     Rect initialRect; 
 
-    int counter;
+    //This one holds how much frames we need to wait to discard a tracker from any state.
+
+
+    //TODO this is to enforce tracking the elements.
+    //This decreasing counter that resets to a initial counter when a ever a face is detected in the cmt track location.
+
+    void reset_decreasing_validate(int value);
     bool validated;
+    int counter;
+    int decreasing_validate;
+    int initial_default;
 private:
     Ptr<FeatureDetector> detector;
     Ptr<DescriptorExtractor> descriptor;

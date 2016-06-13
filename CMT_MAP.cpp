@@ -6,6 +6,7 @@ void CMTMAP::process(const Mat im_gray, const int factor,std::vector<string> str
     //TODO make this one a thread
  for(std::vector<std::string>::iterator v=string_.begin(); v!= string_.end();v++)
  {
+    if(cmt_[*v].initialized)
     cmt_[*v].processFrame(im_gray, factor);
  }
 }
@@ -14,29 +15,39 @@ std::vector<cmt_message> CMTMAP::process_map(const Mat im_gray, const int factor
 std::vector<cmt_message> cmt_messages;
 queue_tracker.clear();
 
-separate();
-
-boost::thread thread_1 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_1);
-boost::thread thread_2 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_2);
-boost::thread thread_3 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_3);
-boost::thread thread_4 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_4);
-
-thread_4.join();
-thread_3.join();
-thread_2.join();
-thread_1.join();
+//separate();
+//
+//boost::thread thread_1 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_1);
+//boost::thread thread_2 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_2);
+//boost::thread thread_3 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_3);
+//boost::thread thread_4 = boost::thread(&CMTMAP::process,this,im_gray, factor,string_4);
+//
+//thread_4.join();
+//thread_3.join();
+//thread_2.join();
+//thread_1.join();
 
 for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); v++)
 {
   cmt_message message;
+  v->second.processFrame(im_gray, factor);
   message.initial_active_points = v->second.num_initial_keypoints;
   message.active_points = v->second.num_active_keypoints;
   message.tracker_name = v->second.name;
   cv::Rect rect = v->second.bb_rot.boundingRect();
 
   message.rect = rect & cv::Rect(0, 0, im_gray.size().width, im_gray.size().height);
-  message.tracker_lost = v->second.tracker_lost;
+//  std::cout<<"What is lost: "<<v->second.tracker_lost<<std::endl;
+  double division = (double) message.active_points / (double)message.initial_active_points;
+
+  std::cout<<"DIvision : "<<division<<std::endl;
+  if(division > 0.2)
+  message.tracker_lost = false;
+  else
+  message.tracker_lost = true;
+
   message.validated = v->second.validated;
+  message.before_being_demoted = v->second.decreasing_validate;
 
   if(message.tracker_lost)
   {
@@ -110,6 +121,13 @@ cmt_.clear();
 
 bool CMTMAP::validate(string name)
 {
+    cmt_[name].validated = true;
+    return true;
+}
+
+bool CMTMAP::reinforce(string name, int value)
+{
+    cmt_[name].reset_decreasing_validate(value);
     cmt_[name].validated = true;
     return true;
 }
