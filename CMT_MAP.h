@@ -21,11 +21,9 @@ struct cmt_message{
     int initial_active_points;
     int active_points;
     string tracker_name;
-
     // This is to indicate a lost value.  This shouldn't be visable.
     bool tracker_lost;
     bool recognized;
-
     //This two are the opposite.
     bool validated;
     int before_being_demoted;
@@ -42,7 +40,7 @@ std::vector<string> queue_tracker;
 
 public:
 //This can be threaded in the futhre and join here without affecting functionality
-std::vector<cmt_message> process_map(const Mat im_gray, const int factor, double ratio=0.3);
+std::vector<cmt_message> process_map(const Mat im_gray, const int factor,std::map<string, string> map_merge,double ratio=0.3);
 //Let this one create the names and values.
 //This one creates temp name values.
 string addtomap(const Mat img,const Rect rect);

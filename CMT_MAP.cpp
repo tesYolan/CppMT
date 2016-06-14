@@ -10,7 +10,7 @@ void CMTMAP::process(const Mat im_gray, const int factor,std::vector<string> str
     cmt_[*v].processFrame(im_gray, factor);
  }
 }
-std::vector<cmt_message> CMTMAP::process_map(const Mat im_gray, const int factor, double ratio=0.3)
+std::vector<cmt_message> CMTMAP::process_map(const Mat im_gray, const int factor,std::map<std::string, std::string> merge, double ratio)
 {
 std::vector<cmt_message> cmt_messages;
 queue_tracker.clear();
@@ -27,6 +27,12 @@ queue_tracker.clear();
 //thread_2.join();
 //thread_1.join();
 
+//TODO Better the merging process with update_area fucntions;
+for(std::map<std::string, std::string>::iterator v = merge.begin(); v!= merge.end(); v++)
+{
+    queue_tracker.push_back(v->second);
+}
+
 for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); v++)
 {
   cmt_message message;
@@ -42,9 +48,19 @@ for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); 
 
   std::cout<<"Division : "<<division<<std::endl;
   if(division > ratio)
+  {
   message.tracker_lost = false;
+  v->second.ratio_frames = 5; //TODO dynamic paramters.
+  }
   else
+  if(v->second.ratio_frames == 0)
+  {
   message.tracker_lost = true;
+  }
+  else
+  {
+  v->second.ratio_frames--;
+  }
 
   message.validated = v->second.validated;
   message.before_being_demoted = v->second.decreasing_validate;

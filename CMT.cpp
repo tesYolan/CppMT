@@ -125,6 +125,7 @@ void CMT::initialize(const Mat im_gray, const Rect rect, string tracker_name, in
     ////FILE_LOG(logDEBUG) << "CMT::initialize() return";
     initialized = true;
     counter = 3;
+    ratio_frames = 5;
 }
 
 void CMT::updateArea(const Mat im_gray, const Rect rect)

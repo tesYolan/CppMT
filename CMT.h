@@ -71,6 +71,7 @@ public:
     int counter;
     int decreasing_validate;
     int initial_default;
+    int ratio_frames;
 private:
     Ptr<FeatureDetector> detector;
     Ptr<DescriptorExtractor> descriptor;
