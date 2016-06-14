@@ -46,22 +46,24 @@ for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); 
 //  std::cout<<"What is lost: "<<v->second.tracker_lost<<std::endl;
   double division = (double) message.active_points / (double)message.initial_active_points;
 
-  std::cout<<"Division : "<<division<<std::endl;
+  //std::cout<<"Division : "<<division<<std::endl;
   if(division > ratio)
   {
   message.tracker_lost = false;
   v->second.ratio_frames = 5; //TODO dynamic paramters.
   }
   else
-  if(v->second.ratio_frames == 0)
   {
-  message.tracker_lost = true;
+      if(v->second.ratio_frames == 0)
+      {
+      message.tracker_lost = true;
+      }
+      else
+      {
+      message.tracker_lost = false;
+      v->second.ratio_frames = v->second.ratio_frames - 1;
+      }
   }
-  else
-  {
-  v->second.ratio_frames--;
-  }
-
   message.validated = v->second.validated;
   message.before_being_demoted = v->second.decreasing_validate;
 
