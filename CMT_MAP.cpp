@@ -10,7 +10,7 @@ void CMTMAP::process(const Mat im_gray, const int factor,std::vector<string> str
     cmt_[*v].processFrame(im_gray, factor);
  }
 }
-std::vector<cmt_message> CMTMAP::process_map(const Mat im_gray, const int factor)
+std::vector<cmt_message> CMTMAP::process_map(const Mat im_gray, const int factor, double ratio=0.3)
 {
 std::vector<cmt_message> cmt_messages;
 queue_tracker.clear();
@@ -40,8 +40,8 @@ for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); 
 //  std::cout<<"What is lost: "<<v->second.tracker_lost<<std::endl;
   double division = (double) message.active_points / (double)message.initial_active_points;
 
-  std::cout<<"DIvision : "<<division<<std::endl;
-  if(division > 0.2)
+  std::cout<<"Division : "<<division<<std::endl;
+  if(division > ratio)
   message.tracker_lost = false;
   else
   message.tracker_lost = true;
