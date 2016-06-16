@@ -73,7 +73,7 @@ for(std::map<std::string, cmt::CMT>::iterator v = cmt_.begin(); v!= cmt_.end(); 
   queue_tracker.push_back(message.tracker_name);
   }
   message.recognized = v->second.identified;
-
+  message.recognized_as = v->second.recognized_as;
   cmt_messages.push_back(message);
 
 }
@@ -109,7 +109,7 @@ string CMTMAP::addtomap(const Mat im_gray,const Rect rect)
   //TODO Fix this to not contain conflicts going forward in previously saved faces
   //and in the files that exist here.
   tracker_num = rand() % 100000;
-  std::string tracker_name = "temp_" + SSTR(tracker_num);
+  std::string tracker_name = SSTR(tracker_num);
   //TODO Here we need to do a check to remove unresolved names
   cmt_[tracker_name] = cmt::CMT();
   cmt_[tracker_name].consensus.estimate_rotation = true;

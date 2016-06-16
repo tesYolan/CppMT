@@ -135,7 +135,7 @@ void CMT::updateArea(const Mat im_gray, const Rect rect)
 
 void CMT::set_name(string tracker_name)
 {
-    name = tracker_name;
+    recognized_as = tracker_name;
     identified = true;
 }
 

@@ -21,6 +21,7 @@ struct cmt_message{
     int initial_active_points;
     int active_points;
     string tracker_name;
+    string recognized_as;
     // This is to indicate a lost value.  This shouldn't be visable.
     bool tracker_lost;
     bool recognized;

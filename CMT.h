@@ -26,7 +26,7 @@ public:
              identified(false), tracker_lost(false),validated(false),counter(5),decreasing_validate(500){};
     void initialize(const Mat im_gray, const Rect rect, string tracker_name, int threshold=50);
     void processFrame(const Mat im_gray,int threshold=30);
-    void set_name(string tracker_name);
+    void set_name(string recognized);
 
     //Calls the intialize with the existing values. But maintains the previous values.
     void updateArea(const Mat im_gray, const Rect rect);
@@ -65,7 +65,7 @@ public:
 
     //TODO this is to enforce tracking the elements.
     //This decreasing counter that resets to a initial counter when a ever a face is detected in the cmt track location.
-
+    string recognized_as;
     void reset_decreasing_validate(int value);
     bool validated;
     int counter;
