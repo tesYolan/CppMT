@@ -5,23 +5,28 @@ cmake_minimum_required (VERSION 2.6)
 option(BUILD_TRAX_CLIENT "Build the trax client." OFF)
 
 find_package(OpenCV REQUIRED)
-
+FIND_PACKAGE(OpenMP)
+IF(OPENMP_FOUND)
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  MESSAGE(STATUS "Found OpenMP")
+ENDIF()
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
-
+set(CMAKE_BUILD_TYPE Debug)
 add_definitions ("-Wall")
-
+add_definitions (-std=c++11)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 if(WIN32)
 add_executable (cmt common.cpp gui.cpp main.cpp
-    CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
+    CMT.cpp Config.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
     fastcluster/fastcluster.cpp getopt/getopt.cpp
     )
 else()
 add_executable (cmt common.cpp gui.cpp main.cpp
-    CMT.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
+    CMT.cpp Config.cpp Consensus.cpp Fusion.cpp Matcher.cpp Tracker.cpp
     fastcluster/fastcluster.cpp)
 endif()
 

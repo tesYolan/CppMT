@@ -16,6 +16,7 @@
 #endif
 
 using cmt::CMT;
+using cmt::Config;
 using cv::imread;
 using cv::namedWindow;
 using cv::Scalar;
@@ -101,7 +102,8 @@ string write_rotated_rect(RotatedRect rect)
 int main(int argc, char **argv)
 {
     //Create a CMT object
-    CMT cmt;
+    Config config("FAST", "BRISK","RANSAC",0.5);
+    CMT cmt(config);
 
     //Initialization bounding box
     Rect rect;

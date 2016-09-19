@@ -96,7 +96,19 @@ void CMT::initialize(const Mat im_gray, const Rect rect)
     matcher.initialize(points_normalized, descs_fg, classes_fg, descs_bg, center);
 
     //Initialize consensus
-    consensus.initialize(points_normalized);
+    if (str_estimator == "CONSENSUS")
+    {
+        consensus.initialize(points_normalized);
+
+    }
+    else
+    {
+        //Just for cases where there are smaller points for the RANSAC to build on
+        consensus.initialize(points_normalized);
+        Estimator.set_initial_keypoints(points_normalized);
+        Estimator.Initialize(20,100); //threshold and maximum number of points
+    }
+
 
     //Create initial set of active keypoints
     for (size_t i = 0; i < keypoints_fg.size(); i++)
@@ -157,19 +169,67 @@ void CMT::processFrame(Mat im_gray) {
     //Estimate scale and rotation from the fused points
     float scale;
     float rotation;
-    consensus.estimateScaleRotation(points_fused, classes_fused, scale, rotation);
-
-    FILE_LOG(logDEBUG) << "scale " << scale << ", " << "rotation " << rotation;
-
-    //Find inliers and the center of their votes
-    Point2f center;
+    Point2f center;//This are the points that i need to replace to incoporate it
     vector<Point2f> points_inlier;
     vector<int> classes_inlier;
-    consensus.findConsensus(points_fused, classes_fused, scale, rotation,
-            center, points_inlier, classes_inlier);
 
-    FILE_LOG(logDEBUG) << points_inlier.size() << " inlier points.";
-    FILE_LOG(logDEBUG) << "center " << center;
+    if (str_estimator == "CONSENSUS" || points_fused.size() < 4)
+    {
+        int start = cv::getTickCount();
+        consensus.estimateScaleRotation(points_fused, classes_fused, scale, rotation);
+        FILE_LOG(logDEBUG) << "scale " << scale << ", " << "rotation " << rotation;
+        consensus.findConsensus(points_fused, classes_fused, scale, rotation,
+            center, points_inlier, classes_inlier);
+        int end = cv::getTickCount();
+        FILE_LOG(logINFO)<< "CONSENSUS took: " << GRANSAC::VPFloat(end-start) / GRANSAC::VPFloat(cv::getTickFrequency()) * 1000.0 << " ms." << std::endl;
+    }
+    else
+    {
+        int start = cv::getTickCount();
+        CandPoints.clear();
+
+        for (size_t i = 0; i < points_fused.size(); i++)
+        {
+        std::shared_ptr<GRANSAC::AbstractParameter> CandPt = std::make_shared<Point2D>(points_fused[i],classes_fused[i]);
+        CandPoints.push_back(CandPt);
+        }
+
+        Estimator.Estimate(CandPoints);
+
+        auto BestInliers = Estimator.GetBestInliers();
+        if(BestInliers.size() > 0)
+        {
+            for(auto& Inlier : BestInliers)
+            {
+                auto RPt = std::dynamic_pointer_cast<Point2D>(Inlier);
+                //Get the center, scale, rotation and fused points here.
+                points_inlier.push_back(RPt->m_normalized);
+                classes_inlier.push_back(RPt->m_class);
+            }
+        }
+        auto BestModel = Estimator.GetBestModel();
+
+        if (BestModel)
+        {
+        std::vector<GRANSAC::VPFloat> p = BestModel->m_model.first;
+
+        scale = p[0];
+        rotation = p[1];
+        center = BestModel->m_model.second;
+
+        }
+
+        int end = cv::getTickCount();
+        FILE_LOG(logINFO)<< "RANSAC took: " << GRANSAC::VPFloat(end-start) / GRANSAC::VPFloat(cv::getTickFrequency()) * 1000.0 << " ms." ;
+
+    }
+    FILE_LOG(logINFO) <<points_fused.size()<<std::endl;
+
+    //The above should give the scale, rotation;
+    FILE_LOG(logINFO) << points_inlier.size() << " inlier points.";
+    FILE_LOG(logINFO) << "center " << center;
+    FILE_LOG(logINFO) << "scale " << scale;
+    FILE_LOG(logINFO) << "rotation " << rotation;
 
     //Match keypoints locally
     vector<Point2f> points_matched_local;

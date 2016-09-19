@@ -4,9 +4,14 @@
 
 #include "common.h"
 #include "Consensus.h"
+#include "Config.h"
 #include "Fusion.h"
 #include "Matcher.h"
 #include "Tracker.h"
+
+
+#include "GRANSAC.hpp"
+#include "RANSAC_model.h"
 
 #include <opencv2/features2d/features2d.hpp>
 
@@ -23,6 +28,12 @@ class CMT
 {
 public:
     CMT() : str_detector("FAST"), str_descriptor("BRISK") {};
+    CMT(Config config)
+    {
+        str_descriptor = config.str_descriptor;
+        str_detector = config.str_detector;
+        str_estimator = config.str_estimation;
+    }
     void initialize(const Mat im_gray, const Rect rect);
     void processFrame(const Mat im_gray);
 
@@ -33,11 +44,14 @@ public:
 
     string str_detector;
     string str_descriptor;
+    string str_estimator;
 
     vector<Point2f> points_active; //public for visualization purposes
+    std::vector<std::shared_ptr<GRANSAC::AbstractParameter>> CandPoints;
     RotatedRect bb_rot;
 
 private:
+    GRANSAC::RANSAC<HomographyModel, 4> Estimator;
     Ptr<FeatureDetector> detector;
     Ptr<DescriptorExtractor> descriptor;
 
