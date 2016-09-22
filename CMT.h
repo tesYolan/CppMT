@@ -27,7 +27,7 @@ namespace cmt
 class CMT
 {
 public:
-    CMT() : str_detector("FAST"), str_descriptor("BRISK") {};
+    CMT() : str_detector("FAST"), str_descriptor("BRISK") , str_estimator("CONSENSUS"){};
     CMT(Config config)
     {
         str_descriptor = config.str_descriptor;
@@ -36,6 +36,9 @@ public:
     }
     void initialize(const Mat im_gray, const Rect rect);
     void processFrame(const Mat im_gray);
+    Mat getOriginalImage();
+    int getInitialActivePoints();
+    int getCurrentActivePoints();
 
     Fusion fusion;
     Matcher matcher;
@@ -55,6 +58,8 @@ private:
     Ptr<FeatureDetector> detector;
     Ptr<DescriptorExtractor> descriptor;
 
+    int initialActivePoints;
+    int currentActivePoints;
     Size2f size_initial;
 
     vector<int> classes_active;
@@ -62,6 +67,7 @@ private:
     float theta;
 
     Mat im_prev;
+    Mat im_Archive;
 };
 
 } /* namespace CMT */

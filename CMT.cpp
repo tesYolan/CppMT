@@ -116,10 +116,25 @@ void CMT::initialize(const Mat im_gray, const Rect rect)
         points_active.push_back(keypoints_fg[i].pt);
         classes_active = classes_fg;
     }
-
+    im_Archive = im_gray(rect);
+    initialActivePoints = points_active.size();
     FILE_LOG(logDEBUG) << "CMT::initialize() return";
 }
 
+Mat CMT::getOriginalImage()
+{
+    return im_Archive;
+}
+
+int CMT::getInitialActivePoints()
+{
+    return initialActivePoints;
+}
+
+int CMT::getCurrentActivePoints()
+{
+    return currentActivePoints;
+}
 void CMT::processFrame(Mat im_gray) {
 
     FILE_LOG(logDEBUG) << "CMT::processFrame() call";
@@ -254,6 +269,7 @@ void CMT::processFrame(Mat im_gray) {
 
     //Remember current image
     im_prev = im_gray;
+    currentActivePoints = points_active.size();
 
     FILE_LOG(logDEBUG) << "CMT::processFrame() return";
 }
