@@ -1,9 +1,9 @@
 #include "CMT_MAP.h"
 
 namespace cmt{
-bool CMT_MAP::addTracker(const Mat im_gray, const Rect rect, string tracker_name)
+bool CMT_MAP::addTracker(const Mat im_gray, const Rect rect, string tracker_name, Config config)
 {
-    cmt_[tracker_name] = CMT();
+    cmt_[tracker_name] = CMT(config);
     cmt_[tracker_name].consensus.estimate_rotation = true;
     cmt_[tracker_name].initialize(im_gray, rect);
 

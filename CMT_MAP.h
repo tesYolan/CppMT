@@ -3,12 +3,13 @@
 #define CMT_MAP_H
 
 #include "CMT.h"
+#include "Config.h"
 namespace cmt
 {
 
 class CMT_MAP {
 public:
-    bool addTracker(const Mat img, const Rect rect,string tracker_name);
+    bool addTracker(const Mat img, const Rect rect,string tracker_name, Config config);
     bool removeTracker(string id );
     bool clear();
 
